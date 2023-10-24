@@ -36,3 +36,31 @@
     transform: rotate(360deg);
   }
 }
+
+.agregar-cliente-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.cliente-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.datos-personales, .datos-adicionales {
+  display: flex;
+  gap: 10px;
+}
+
+.submit-button-container {
+  display: flex;
+  justify-content: Right;
+}
+

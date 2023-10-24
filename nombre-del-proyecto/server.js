@@ -13,6 +13,23 @@ const db = mysql.createConnection({
   database: 'AdopcionDB'
 });
 
+app.post('/addCliente', (req, res) => {
+  const cliente = req.body;
+
+  const sql = 'INSERT INTO Cliente (Nombre, Correo, Numero_celular, Adopciones, Codigo_QR) VALUES (?, ?, ?, ?, ?)';
+  db.query(sql, [cliente.Nombre, cliente.Correo, cliente.Numero_celular, cliente.Adopciones, cliente.Codigo_QR], (err, result) => {
+    if (err) {
+      console.error('Error al insertar cliente:', err);
+      return res.status(500).send('Error al insertar cliente.');
+    }
+    console.log("Cliente insertado: " + result.insertId);
+
+    // Si tienes que agregar datos a la tabla Adopcion aquí, puedes hacerlo. Por ahora lo omito porque no se menciona en el formulario.
+
+    res.send('Cliente insertado correctamente');
+  });
+});
+
 app.post('/saveData', (req, res) => {
     const data = req.body.data;
     for (let item of data) {
