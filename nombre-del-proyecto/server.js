@@ -64,6 +64,51 @@ app.get('/getClientes', (req, res) => {
   });
 });
 
+app.put('/updateCliente/:id', (req, res) => {
+  const id = req.params.id;
+  const { Nombre, Correo, Numero_celular, Adopciones, Codigo_QR } = req.body;
+
+  const updateQuery = 'UPDATE Cliente SET Nombre = ?, Correo = ?, Numero_celular = ?, Adopciones = ?, Codigo_QR = ? WHERE ID = ?';
+  db.query(updateQuery, [Nombre, Correo, Numero_celular, Adopciones, Codigo_QR, id], (err, result) => {
+      if (err) {
+          console.error('Error al actualizar cliente:', err);
+          return res.status(500).send('Error al actualizar cliente.');
+      }
+
+      console.log(`Cliente con ID ${id} actualizado.`);
+      res.json({ success: true, message: `Cliente con ID ${id} actualizado exitosamente` });
+      
+  });
+});
+
+
+app.delete('/deleteCliente/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Primero eliminamos las referencias en la tabla Adopcion
+  const deleteAdopcionesQuery = 'DELETE FROM Adopcion WHERE Cliente_ID = ?';
+  db.query(deleteAdopcionesQuery, [id], (err, result) => {
+      if (err) {
+          console.error('Error al eliminar adopciones relacionadas:', err);
+          return res.status(500).send('Error al eliminar adopciones relacionadas.');
+      }
+
+      // Luego eliminamos el cliente
+      const deleteClienteQuery = 'DELETE FROM Cliente WHERE ID = ?';
+      db.query(deleteClienteQuery, [id], (err, result) => {
+          if (err) {
+              console.error('Error al eliminar cliente:', err);
+              return res.status(500).send('Error al eliminar cliente.');
+          }
+
+          console.log(`Cliente con ID ${id} eliminado.`);
+          res.send(`Cliente con ID ${id} eliminado.`);
+      });
+  });
+});
+
+
+
 app.get('/getAdopciones', (req, res) => {
   const getAdopcionesQuery = 'SELECT * FROM Adopcion';
 

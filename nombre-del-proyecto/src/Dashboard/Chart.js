@@ -97,12 +97,13 @@ export default function Chart() {
 />
 <TextField 
     label="Número celular" 
-    name="Número celular" 
+    name="Numero_celular" 
     value={formData.Numero_celular} 
     onChange={handleChange} 
     required 
     sx={{ padding: '10px 5px' }} // Ajusta el valor según tus necesidades
 />
+
 <TextField 
     label="Adopciones" 
     name="Adopciones" 
