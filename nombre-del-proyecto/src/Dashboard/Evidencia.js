@@ -165,7 +165,7 @@ export default function Evidencia() {
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 240,
+                    height: 'fit-content',
                   }}
                 >
                   <UploadEvidence />

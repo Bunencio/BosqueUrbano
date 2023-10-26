@@ -304,7 +304,7 @@ const ModalStyle = styled('div')(({ theme }) => ({
         </TableBody>
     </Table>
 </TableContainer>
-
+<TableContainer style={{ maxHeight: '300px' }}>
       <Title>Tabla Adopción</Title>
       <Table size="small">
         <TableHead>
@@ -348,6 +348,8 @@ const ModalStyle = styled('div')(({ theme }) => ({
 
         </TableBody>
       </Table>
+
+      </TableContainer>
     </React.Fragment>
   );
 }

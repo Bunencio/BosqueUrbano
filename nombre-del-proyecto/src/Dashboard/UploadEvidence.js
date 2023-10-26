@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
+import { Button, TextField, Table, TableBody, TableCell, TableHead, TableRow, Paper, Box } from '@mui/material';
 import Title from './Title';
 import axios from 'axios';
 import { makeStyles } from '@mui/styles';
@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UploadEvidence() {
   const [clientes, setClientes] = useState([]);
+  const [imagePreview, setImagePreview] = useState(null); // Estado para la previsualización de la imagen
   const [formData, setFormData] = useState({
     ID: '',
     Nombre: '',
@@ -37,6 +38,15 @@ export default function UploadEvidence() {
       [name]: value,
     }));
   };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, imagen: file });
+
+    // Crear una URL temporal para la previsualización de la imagen
+    const imageUrl = URL.createObjectURL(file);
+    setImagePreview(imageUrl);
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -74,7 +84,7 @@ export default function UploadEvidence() {
 
   return (
     <React.Fragment>
-        <Title>Agregar Cliente</Title>
+        <Title>Agregar Evidencia</Title>
         <div >
       <form onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>
 
@@ -96,30 +106,40 @@ export default function UploadEvidence() {
     sx={{ padding: '10px 5px' }} 
 />
 
-<input 
-    type="file" 
-    name="imagen" 
-    onChange={(e) => setFormData({ ...formData, imagen: e.target.files[0] })} 
-    sx={{ padding: '10px 5px' }} 
-/>
+<Box sx={{ margin: '10px 0' }}>
+          <TextField 
+              type="file"
+              variant="outlined"
+              fullWidth
+              name="imagen"
+              inputProps={{ onChange: handleImageChange }}
+          />
+      </Box>
 
-       
+      {/* Muestra la previsualización de la imagen si imagePreview no es null */}
+      {imagePreview && (
+        <Box sx={{ margin: '10px 0', display: 'flex', justifyContent: 'center' }}>
+            <img src={imagePreview} alt="Previsualización" style={{ width: '150px', height: '150px', objectFit: 'cover' }} />
+        </Box>
+      )}
 
-            <Button 
-                type="submit" 
-                sx={{ 
-                    backgroundColor: '#007BFF',
-                    color: 'white',
-                    padding: '10px 20px 10px',
-                    '&:hover': {
-                        backgroundColor: '#0056b3',
-                    },
-                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
-                    borderRadius: '105px',
-                }}
-            >
-                Agregar
-            </Button>
+      <Box sx={{ margin: '10px 0' }}>
+          <Button 
+              type="submit" 
+              sx={{ 
+                  backgroundColor: '#007BFF',
+                  color: 'white',
+                  padding: '10px 20px 10px',
+                  '&:hover': {
+                      backgroundColor: '#0056b3',
+                  },
+                  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
+                  borderRadius: '105px',
+              }}
+          >
+              Agregar
+          </Button>
+      </Box>
 
 
        
