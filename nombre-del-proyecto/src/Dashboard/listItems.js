@@ -9,22 +9,34 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-
+import { Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Evidencia from './Evidencia';
 export const mainListItems = (
   <React.Fragment>
+   
+
+    <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
     <ListItemButton>
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
+    </Link>
+
     
+
+    <Link to="/evidencias" style={{ textDecoration: 'none', color: 'inherit' }}>
     <ListItemButton>
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
       <ListItemText primary="Evidencias" />
     </ListItemButton>
+</Link>
+
+
     
   </React.Fragment>
 );
@@ -34,23 +46,6 @@ export const secondaryListItems = (
     <ListSubheader component="div" inset>
       Saved reports
     </ListSubheader>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Current month" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Last quarter" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Year-end sale" />
-    </ListItemButton>
+    
   </React.Fragment>
 );

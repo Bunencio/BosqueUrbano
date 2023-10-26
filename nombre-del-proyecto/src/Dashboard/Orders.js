@@ -26,9 +26,21 @@ export default function App() {
   const [openModal, setOpenModal] = useState(false);
   const [clienteToEdit, setClienteToEdit] = useState(null);
   const [open, setOpen] = useState(false);
+  const [imageURL, setImageURL] = useState(null);
 
   const [modalData, setModalData] = useState({ Nombre: '', Correo: '' });
   
+  const handleOpenImageModal = (url) => {
+    setImageURL(url);
+    setOpen(true); // Asume que ya tienes un estado llamado "open" para manejar la apertura/cierre del modal
+  };
+  
+  const handleOpenImageModal2 = (relativeUrl) => {
+    // Convertir la URL relativa en una URL completa.
+    const fullUrl = `http://localhost:5000/${relativeUrl}`;
+    setImageURL(fullUrl);
+    setOpen(true);
+};
 
 
   const filteredClientes = clientes.filter(cliente =>
@@ -119,6 +131,20 @@ const handleDelete = (id) => {
     }
 }
 
+const handleDeleteAdopcion = (id) => {
+  console.log("Eliminando adopción con ID:", id); 
+  if (window.confirm("¿Estás seguro de que deseas eliminar esta adopción?")) {
+      axios.delete(`http://localhost:5000/deleteAdopcion/${id}`)
+          .then(response => {
+              console.log(response.data);
+              // Update 'adopciones' state to remove the adoption from frontend.
+              setAdopciones(prevAdopciones => prevAdopciones.filter(adopcion => adopcion.Adopcion_ID !== id));
+          })
+          .catch(error => console.error("Error al eliminar adopción:", error));
+  }
+}
+
+
 const handleClose = () => {
   setOpenModal(false);
 };
@@ -151,6 +177,8 @@ const handleSave = () => {
 };
 
 
+const adopcionesConLinkExterno = adopciones.filter(adopcion => adopcion.Imagen && adopcion.Imagen.startsWith('http'));
+const adopcionesConUploads = adopciones.filter(adopcion => adopcion.Imagen && adopcion.Imagen.startsWith('uploads'));
 
 
 const ModalStyle = styled('div')(({ theme }) => ({
@@ -165,18 +193,7 @@ const ModalStyle = styled('div')(({ theme }) => ({
   p: 4,
 }));
 
-const modalBody = (
-  <ModalStyle>
-    <Typography variant="h6" component="h2">
-      Editar Cliente
-    </Typography>
-    {/* Aquí puedes colocar tu formulario para editar el cliente */}
-    {/* Por ejemplo: */}
-    <TextField label="Nombre" defaultValue={clienteToEdit?.Nombre} />
-    {/* Añade más campos según lo necesites */}
-    <Button onClick={() => setOpen(false)}>Cerrar</Button>
-  </ModalStyle>
-);
+
 
   return (
     
@@ -217,6 +234,26 @@ const modalBody = (
   </Box>
 </Modal>
 
+<Modal
+  open={open}
+  onClose={() => setOpen(false)}
+  aria-labelledby="image-modal-title"
+  aria-describedby="image-modal-description"
+>
+  <Box
+    sx={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      bgcolor: 'background.paper',
+      boxShadow: 24,
+      p: 4,
+    }}
+  >
+    {imageURL && <img src={imageURL} alt="Adopción" style={{ maxWidth: '90%', maxHeight: '90%' }} />}
+  </Box>
+</Modal>
 
       <Title>Upload Excel</Title>
       <input type="file" onChange={handleFileChange} />
@@ -248,7 +285,12 @@ const modalBody = (
                     <TableCell>{cliente.ID}</TableCell>
                     <TableCell>{cliente.Nombre}</TableCell>
                     <TableCell>{cliente.Correo}</TableCell>
-                    <TableCell>{cliente.Numero_celular}</TableCell>
+                    <TableCell>
+                      <a href={`https://wa.me/52${cliente.Numero_celular}`} target="_blank" rel="noopener noreferrer">
+                        {cliente.Numero_celular}
+                      </a>
+                    </TableCell>
+
                     <TableCell>{cliente.Adopciones}</TableCell>
                     <TableCell>{cliente.Codigo_QR}</TableCell>
                     
@@ -269,19 +311,41 @@ const modalBody = (
           <TableRow>
             <TableCell>AdopcionID</TableCell>
             <TableCell>ClienteID_FK</TableCell>
+            <TableCell>Nombre del Cliente</TableCell>
             <TableCell>QR</TableCell>
             <TableCell>Imagen</TableCell>
+            <TableCell>Acciones</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {adopciones.map(adopcion => (
+               
+        {adopcionesConLinkExterno.map(adopcion => (
             <TableRow key={adopcion.AdopcionID}>
               <TableCell>{adopcion.ID}</TableCell>
               <TableCell>{adopcion.Cliente_ID}</TableCell>
+              <TableCell>{adopcion.NombreCliente}</TableCell>
               <TableCell>{adopcion.QR}</TableCell>
-              <TableCell><img src={adopcion.Imagen} alt="Imagen Adopción" width="100" /></TableCell>
+              <TableCell>
+                <Button onClick={() => handleOpenImageModal(adopcion.Imagen)}>Ver Imagen</Button>
+              </TableCell>
+              <Button onClick={() => handleDeleteAdopcion(adopcion.ID)}>Eliminar</Button>
             </TableRow>
-          ))}
+        ))}
+
+       
+        {adopcionesConUploads.map(adopcion => (
+            <TableRow key={adopcion.AdopcionID}>
+              <TableCell>{adopcion.ID}</TableCell>
+              <TableCell>{adopcion.Cliente_ID}</TableCell>
+              <TableCell>{adopcion.NombreCliente}</TableCell>
+              <TableCell>{adopcion.QR}</TableCell>
+              <TableCell>
+                <Button onClick={() => handleOpenImageModal2(adopcion.Imagen)}>Ver Imagen</Button>
+              </TableCell>
+              <Button onClick={() => handleDeleteAdopcion(adopcion.ID)}>Eliminar</Button>
+            </TableRow>
+        ))}
+
         </TableBody>
       </Table>
     </React.Fragment>
