@@ -53,7 +53,14 @@ export default function Chart() {
   
     // Si el usuario confirma, entonces se envían los datos
     if (isConfirmed) {
-      axios.post('http://localhost:5000/addCliente', formData)
+      axios({
+        method: 'post',
+        url: 'http://localhost:5000/addCliente',
+        data: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
         .then(response => {
           console.log(response.data);
           setClientes([...clientes, formData]);

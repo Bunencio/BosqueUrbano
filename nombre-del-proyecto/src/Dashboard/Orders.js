@@ -13,7 +13,7 @@ import React, { useState, useEffect } from 'react';
 import { TableContainer } from '@mui/material';
 import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
-
+import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
@@ -193,7 +193,48 @@ const ModalStyle = styled('div')(({ theme }) => ({
   p: 4,
 }));
 
+const rows = filteredClientes.map(cliente => ({
+  id: cliente.Cliente_ID,
+  ClienteID: cliente.ID,
+  Nombre: cliente.Nombre,
+  Correo: cliente.Correo,
+  NumeroCelular: cliente.Numero_celular,
+  Adopciones: cliente.Adopciones,
+  CodigoQR: cliente.Codigo_QR,
+}));
 
+console.log(rows)
+
+const columns = [
+  { field: 'ClienteID', headerName: 'ClienteID', width: 150 },
+  { field: 'Nombre', headerName: 'Nombre', width: 200 },
+  { field: 'Correo', headerName: 'Correo', width: 200 },
+  {
+    field: 'NumeroCelular',
+    headerName: 'Número celular',
+    width: 200,
+    renderCell: (params) => (
+      <a href={`https://wa.me/52${params.value}`} target="_blank" rel="noopener noreferrer">
+        {params.value}
+      </a>
+    ),
+  },
+  { field: 'Adopciones', headerName: 'Adopciones', width: 150 },
+  { field: 'CodigoQR', headerName: 'Código QR', width: 200 },
+  {
+    field: 'actions',
+    headerName: 'Acciones',
+    width: 250,
+    renderCell: (params) => (
+      <>
+        <Button onClick={() => handleEdit(params.row)}>Editar</Button>
+        <Button onClick={() => handleDelete(params.row.ClienteID)}>Eliminar</Button>
+      </>
+    ),
+  },
+];
+
+console.log(columns)
 
   return (
     
@@ -266,6 +307,8 @@ const ModalStyle = styled('div')(({ theme }) => ({
     onChange={e => setSearchTerm(e.target.value)}
     style={{ marginBottom: '20px' }}
 />
+
+
 <TableContainer style={{ maxHeight: '300px' }}>
     <Table size="small">
         <TableHead>
@@ -310,7 +353,7 @@ const ModalStyle = styled('div')(({ theme }) => ({
         <TableHead>
           <TableRow>
             <TableCell>AdopcionID</TableCell>
-            <TableCell>ClienteID_FK</TableCell>
+            <TableCell>ClienteID</TableCell>
             <TableCell>Nombre del Cliente</TableCell>
             <TableCell>QR</TableCell>
             <TableCell>Imagen</TableCell>

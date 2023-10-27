@@ -6,6 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const app = express();
 app.use(cors()); 
+app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Configuración para recibir FormData y guardar archivos
@@ -48,8 +49,11 @@ app.post('/addAdopcion', upload.single('imagen'), (req, res) => {
 
 
 app.post('/addCliente', (req, res) => {
-  const cliente = req.body;
+  console.log(req.headers); // para ver los encabezados de la solicitud
+  console.log(req.body);    // para ver el cuerpo de la solicitud
 
+  const cliente = req.body;
+  console.log("holi", cliente)
   const sql = 'INSERT INTO Cliente (Nombre, Correo, Numero_celular, Adopciones, Codigo_QR) VALUES (?, ?, ?, ?, ?)';
   db.query(sql, [cliente.Nombre, cliente.Correo, cliente.Numero_celular, cliente.Adopciones, cliente.Codigo_QR], (err, result) => {
     if (err) {
